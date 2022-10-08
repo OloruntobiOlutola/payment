@@ -1,45 +1,42 @@
-// const express = require("express");
-// const app = express();
-// const port = 8080;
-// const axios = require("axios");
-// const FormData = require("form-data");
-// const dataVerify = new FormData();
+const axios = require("axios");
+const FormData = require("form-data");
+const dataVerify = new FormData();
+const { PAYSTACK_SECRET } = process.env;
 
-// const configVerify = {
-//   method: "get",
-//   url: "https://api.paystack.co/transaction/verify/XXRFED",
-//   headers: {
-//     Authorization: "Bearer sk_test_f83f972af703cbef25827385573b60bf7ddf4804",
-//     ...dataVerify.getHeaders(),
-//   },
-//   data: dataVerify,
-// };
+const data = JSON.stringify({
+  email: "customer@email.com",
+  amount: "500000",
+  reference: "XXRFED",
+  metadata: {
+    custom_fields: [
+      {
+        display_name: "Mobile Number",
+        variable_name: "mobile_number",
+        value: "+2348012345678",
+      },
+    ],
+  },
+});
 
-// const data = JSON.stringify({
-//   email: "customer@email.com",
-//   amount: "500000",
-//   reference: "XXRFED",
-//   metadata: {
-//     custom_fields: [
-//       {
-//         display_name: "Mobile Number",
-//         variable_name: "mobile_number",
-//         value: "+2348012345678",
-//       },
-//     ],
-//   },
-// });
+var config = {
+  method: "post",
+  url: "https://api.paystack.co/transaction/initialize",
+  headers: {
+    Authorization: PAYSTACK_SECRET,
+    "Content-Type": "application/json",
+  },
+  data: data,
+};
 
-// var config = {
-//   method: "post",
-//   url: "https://api.paystack.co/transaction/initialize",
-//   headers: {
-//     Authorization: "Bearer sk_test_f83f972af703cbef25827385573b60bf7ddf4804",
-//     "Content-Type": "application/json",
-//   },
-//   data: data,
-// };
-
+const configVerify = {
+  method: "get",
+  url: "https://api.paystack.co/transaction/verify/XXRFED",
+  headers: {
+    Authorization: PAYSTACK_SECRET,
+    ...dataVerify.getHeaders(),
+  },
+  data: dataVerify,
+};
 // app.get("/", async (req, res) => {
 //   try {
 //     const result = await axios(config);
@@ -72,8 +69,4 @@
 //       message: error,
 //     });
 //   }
-// });
-
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`);
 // });
